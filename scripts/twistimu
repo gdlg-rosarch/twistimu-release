@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import rospy
+from twistimu import TwistIMU
+from twistimu import Hourglass
+from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Twist
+from dynamic_reconfigure.server import Server
+from twistimu.cfg import twistimuConfig
+from rospy.exceptions import ROSException
+
+"""
+  ROS node using IMU input to generate Twist command
+"""
+
+try:
+
+    rospy.init_node('twistimu')
+
+    twistimu = TwistIMU()
+    twist_topic = rospy.Publisher('~cmd', Twist, queue_size=1, tcp_nodelay=True)
+    hourglass = Hourglass()
+
+    def onNewIMUData(message):
+
+        output_message = twistimu.computeTwist(message, hourglass.elapsedTime())
+
+        try:
+            twist_topic.publish(output_message)
+        except ROSException as e:
+            rospy.logerr(e.message)
+
+    server = Server(twistimuConfig, twistimu.configCallback)
+    rospy.Subscriber("~imu", Imu, onNewIMUData, queue_size=1)
+
+    rospy.spin()
+
+except rospy.ROSInterruptException:
+    pass
