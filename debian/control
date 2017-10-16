@@ -1,0 +1,12 @@
+Source: ros-kinetic-twistimu
+Section: misc
+Priority: extra
+Maintainer: Easymov Robotics <dev@easymov.fr>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-dynamic-reconfigure
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-twistimu
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kinetic-dynamic-reconfigure, ros-kinetic-geometry-msgs, ros-kinetic-rospy, ros-kinetic-sensor-msgs
+Description: ROS Node that convert IMU data to a Twist for manual robot drive.
